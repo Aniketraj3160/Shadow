@@ -1,0 +1,360 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="shortcut icon" href="{% static "images/favicon2.ico" %}" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="{% static "images/apple-touch-icon2.png" %}">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="{% static "style.css" %}">
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="{% static "css/responsive.css" %}">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static "css/custom.css" %}">
+    <script src="{% static "js/modernizr.js" %}"></script> <!-- Modernizr -->
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- load CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400">
+    <!-- https://getbootstrap.com/ -->
+    <link rel="stylesheet" href="{% static "this/templatemo-style.css" %}">
+<html>
+
+<style>
+    body {
+      background-color: #999999;
+
+      font-family: "Helvetica Neue", sans-serif;
+      margin: 0;
+    }
+    .w3-sidebar{
+        background-color: #404040;
+        color: white;
+        padding-top: 30px;
+    }
+    .w3-bar-block .w3-bar-item {
+        border-top:30px;
+    }
+
+    .select.form-control:not([size]):not([multiple]){
+            background-color:black;
+            height:15%;
+            width: 70%;
+            margin-left: 300px;
+        }
+
+        .contain{
+            font-size: 25px;
+            color: #fff;
+            text-align: center;
+            -webkit-animation: glow 1s ease-in-out infinite alternate;
+            -moz-animation: glow 1s ease-in-out infinite alternate;
+            animation: glow 1s ease-in-out infinite alternate;
+        }
+
+@-webkit-keyframes glow {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+  }
+  
+  to {
+    text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+  }
+}
+
+
+
+
+
+
+
+</style>
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+<link rel="stylesheet" href="style.css">
+<body>
+ <div class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-left" style="width:200px; " id="mySidebar">
+  
+  
+  <a href="{% url 'landing-page' %}" class="w3-bar-item w3-button">Home</a>
+  <a href="{% url 'linkgraph' %}" class="w3-bar-item w3-button">Statistics</a>
+  <a href="{% url 'piechart' %}" class="w3-bar-item w3-button">Pie Chart</a>
+  <a href="{% url 'indianmap' %}" class="w3-bar-item w3-button">India Statistics</a>
+  <a href="#" class="w3-bar-item w3-button">Bar Graph</a>
+</div>
+
+
+<div style="text-align: center"><!-- Initialize a select button -->
+<div class="custom-select" >
+  <select id="selectButton" style="text-align: center"></select>
+</div></div>
+<div class="content-section" style="margin-top:1em; text-align: center">
+  <form method="POST" enctype="multipart/form-data" id="personForm" data-cities-url="{% url 'ajax_load_cities' %}"
+    novalidate>
+    {% csrf_token %}
+    {% load crispy_forms_tags %}
+    {{ form | crispy }}
+    <div class="form-group">
+      <button class="btn btn-outline-info" type="submit"> Search </button>
+    </div>
+  </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+  $("#id_state").change(function () {
+    var url = $("#personForm").attr("data-cities-url");
+    var stateId = $(this).val();
+
+    $.ajax({
+      url: url,
+      data: {
+        'state': stateId
+      },
+      success: function (data) {
+        $("#id_city").html(data);
+      }
+    });
+
+  });
+</script>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"  style="text-align: center;"></div>
+
+<!-- Color Scale -->
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script>
+  var data = []
+  var month = {{ month }}
+  var dept1 = {{ dept1 }}
+  var dept2 = {{ dept2 }}
+  var dept3 = {{ dept3 }}
+  var dept4 = {{ dept4 }}
+  var dept5 = {{ dept5 }}
+  var dept6 = {{ dept6 }}
+  var dept7 = {{ dept7 }}
+  var dept8 = {{ dept8 }}
+  for (x = 0; x < month.length; x++) {
+    var temp = { month: month[x], dept1: dept1[x], dept2: dept2[x], dept3: dept3[x], dept4: dept4[x], dept5: dept5[x], dept6: dept6[x], dept7: dept7[x], dept8: dept8[x] }
+    data.push(temp)
+  }
+  console.log(month)
+  console.log(dept1)
+
+  // set the dimensions and margins of the graph
+  var margin = { top: 90, right: 100, bottom: 30, left: 110 },
+    width = 760 - margin.left - margin.right,
+    height = 450 - margin.top - margin.bottom;
+  var radius = 7;
+  // append the svg object to the body of the page
+  var svg = d3.select("#my_dataviz")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+      "translate(" + margin.left + "," + margin.top + ")");
+
+  //Read the data
+  d3.csv("{% static 'graph/dataaa.csv' %}", function (data1) {
+
+
+
+    // List of groups (here I have one group per column)
+    var allGroups = { "Department of Consumer Affairs": "dept1", "Department of Food and Public Distribution": "dept2", "Serious Fraud Investigation Office": "dept3", "Forest Reserve Conservation Authority": "dept4", "Criminal Investigation Department": "dept5", "Labour Bureau": "dept6", "National Commission for Minorities": "dept7", "National Commission for Women": "dept8" }
+    var allGroup = ["Department of Consumer Affairs", "Department of Food and Public Distribution", "Serious Fraud Investigation Office", "Forest Reserve Conservation Authority", "Criminal Investigation Department", "Labour Bureau", "National Commission for Minorities", "National Commission for Women"]
+    //var allGroup = ["dept1","dept2","dept3","dept4","dept5","dept6","dept7","dept8"]
+    // add the options to the button
+    d3.select("#selectButton")
+      .selectAll('myOptions')
+      .data(allGroup)
+      .enter()
+      .append('option')
+      .text(function (d) { return d; }) // text showed in the menu
+      .attr("value", function (d) { return allGroups[d]; }) // corresponding value returned by the button
+
+    // Add X axis --> it is a date format
+    var mydata = { 1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August", 9: "September", 10: "October", 11: "November", 12: "December" };
+    var x = d3.scaleLinear()
+      .domain([0, 12])
+      //.domain(mydata)
+      .range([0, width * 1.09]);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x)
+        .tickSize(5)
+        .tickPadding(10)
+        .tickFormat(function (d) { return mydata[d] }))
+    //   .selectAll("text")
+    //     .style("text-anchor", "end")
+    //     .attr("transform", "rotate(-85)");
+
+
+
+    // Add Y axis
+    var y = d3.scaleLinear()
+      .domain([0, 40])
+      .range([height, 0]);
+    svg.append("g")
+      .call(d3.axisLeft(y).tickSize(0).tickPadding(10))
+
+
+    const g = svg.append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
+
+
+    const yAxisLabel = "Number of Cases Solved";
+    const xAxisLabel = "Month of the Year";
+    const yAxisG = g.append('g').call(y);
+    yAxisG.selectAll('.domain').remove();
+
+    yAxisG.append('text')
+      .attr('class', 'axis-label')
+      .attr('y', -149)
+      .attr('x', -33)
+      .attr('fill', 'black')
+      .attr('transform', `rotate(-90)`)
+      .attr('text-anchor', 'middle')
+      .style("font-size", "16px")
+      .style("font-weight", "bold")
+      .style("text-decoration", "underline")
+      .text(yAxisLabel);
+
+
+    // const xAxisG = g.append('g').call(x)
+
+
+    // xAxisG.select('.domain').remove();
+
+    // xAxisG.append('text')
+    //   .attr('class', 'axis-label')
+    //   .attr('y', 270)
+    //   .attr('x', 0)
+    //   .attr('fill', 'black')
+    //   .text(xAxisLabel);
+
+
+    function handleMouseOver(d, i) {  // Add interactivity
+      // Use D3 to select element, change color and size
+      d3.select(this)
+        .style("fill", "#ffa500")
+        .attr("r", radius * 2)
+      var dept = d3.select("#selectButton").property("value");
+      d3.selectAll("path")
+        .attr("opacity", 0.1);
+      console.log(dept)
+      //console.log(x(d.month))
+      // Specify where to put label of text
+      svg.append("text")
+        .attr("id", "t" + d[dept] + "-" + d.month + "-" + i)  // Create an id for text so we can select it later for removing on mouseout
+        .attr("x", function () { return x(d.month) - 7; })
+        .attr("y", function () {
+          if (dept == "dept1")
+            return y(d[dept]) - 27;
+          else
+            return y(d.selectedGroup) - 27;
+        })
+
+
+        .text(function () {
+          if (dept == "dept1")
+            return [d[dept]];  // Value of the text
+          else
+            return [d.selectedGroup];
+        })
+        .style("font-size", "16px")
+        .style("font-weight", "bold")
+    }
+
+    function handleMouseOut(d, i) {
+      // Use D3 to select element, change color back to normal
+      d3.selectAll("path")
+        .attr("opacity", 1);
+      d3.select(this)
+        .style("fill", "#69b3a2")
+        .attr("r", radius)
+      var dept = d3.select("#selectButton").property("value");
+      // Select text by id and then remove
+      d3.select("#t" + d[dept] + "-" + d.month + "-" + i).remove();  // Remove text location
+    }
+
+    // Initialize line with group a
+    var line = svg
+      .append('g')
+      .append("path")
+      .datum(data)
+      .attr("d", d3.line()
+        .x(function (d) {
+          //console.log(y(d.dept1))
+          return x(+d.month)
+        })
+        .y(function (d) { return y(+d.dept1) })
+      )
+      .attr("stroke", "black")
+      .style("stroke-width", 4)
+      .style("fill", "none")
+
+    // Initialize dots with group a
+    var dot = svg
+      .selectAll('circle')
+      .data(data)
+      .enter()
+      .append('circle')
+      .attr("cx", function (d) { return x(+d.month) })
+      .attr("cy", function (d) { return y(+d.dept1) })
+      .attr("r", 7)
+      .style("fill", "#69b3a2")
+      .on("mouseover", handleMouseOver)
+      .on("mouseout", handleMouseOut);
+
+
+    // A function that update the chart
+    function update(selectedGroup) {
+
+      // Create new data with the selection?
+      var dataFilter = data.map(function (d) {
+        return { month: d.month, selectedGroup: d[selectedGroup] }
+      })
+
+      // Give these new data to update line
+      line
+        .datum(dataFilter)
+        .transition()
+        .duration(1000)
+        .attr("d", d3.line()
+          .x(function (d) { return x(+d.month) })
+          .y(function (d) { return y(+d.selectedGroup) })
+        )
+      dot
+        .data(dataFilter)
+        .transition()
+        .duration(1000)
+        .attr("cx", function (d) { return x(+d.month) })
+        .attr("cy", function (d) { return y(+d.selectedGroup) })
+    }
+
+    // When the button is changed, run the updateChart function
+    d3.select("#selectButton").on("change", function (d) {
+      // recover the option that has been chosen
+      var selectedOption = d3.select(this).property("value")
+      // run the updateChart function with this selected option
+      update(selectedOption)
+    })
+
+  })
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,207 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Basic -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Mobile Metas -->
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<!-- Site Metas -->
+<title>S.H.A.D.O.W - Forum</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<!-- Site Icons -->
+<link rel="shortcut icon" href="{% static "images/favicon2.ico" %}" type="image/x-icon" />
+<link rel="apple-touch-icon" href="{% static "images/apple-touch-icon2.png" %}">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+<!-- Site CSS -->
+<link rel="stylesheet" href="{% static "style.css" %}">
+<!-- Responsive CSS -->
+<link rel="stylesheet" href="{% static "css/responsive.css" %}">
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{% static "css/custom.css" %}">
+<script src="{% static "js/modernizr.js" %}"></script> <!-- Modernizr -->
+
+<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+<style>
+	#mainNav {
+		opacity: 70%;
+		transition: opacity 1s;
+	}
+
+	#mainNav:hover {
+		opacity: 100%;
+	}
+
+	.bg {
+		position: absolute;
+		width: 100%;
+		background-position: center;
+		background-repeat: repeat-y;
+		z-index: -100;
+	}
+
+	body {
+		background-image: url({% static "uploads/BG.jpg" %});
+		background-repeat: repeat-y;
+	}
+</style>
+</head>
+
+<body id="page-top" class="politics_version">
+	<div class="container">
+		<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background-color: #242222">
+			<div class="container">
+				<a class="navbar-brand js-scroll-trigger" href="#page-top">
+					<img class="img-fluid" src="{% static "images/test.png" %}" alt="" />
+				</a>
+				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+					data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+					aria-label="Toggle navigation">
+					Menu
+					<i class="fa fa-bars"></i>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarResponsive">
+					<ul class="navbar-nav text-uppercase ml-auto">
+						{% if user.is_authenticated %}
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'landing-page' %}">Home</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'profile' %}">Profile</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'post-create' %}">Add Post</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'register-camera' %}">Camera</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'cameraslist' %}">Camera List</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'logout' %}">Logout</a>
+						</li>
+						{% else %}
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'login' %}">Login</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'register' %}">Register</a>
+						</li>
+						{% endif %}
+					</ul>
+				</div>
+			</div>
+		</nav>
+		{% block content %}
+		<img>
+		<div class="container" style="width:100%; margin-top:10em">
+			{% if request.user.is_authenticated %}
+			{% for post in posts %}
+			<div class="media border p-5" style="background-color: white;">
+				<article class="media content-section">
+					<div class="media-body">
+						<div class="article-metadata">Posted by
+							{% if request.user == post.author%}
+								<a class="mr-2" href="{% url 'profile'%}"> {{ post.author }}</a>
+
+							{% else %}
+								<a class="mr-2" href="{% url 'userprofile' post.id%}"> {{ post.author }}</a>
+							{% endif %}
+							<small class="text-muted"> on {{ post.date_posted|date:"F d, Y"}}</small>
+						</div>
+						<h2><a class="article-title" href="{% url 'post-detail' post.id %}"> {{ post.title }}</a></h2>
+						<p class="text-muted">Incident reported in {{ post.city }} STATE : {{ post.state }}</p><br>
+						<p class="article-content">{{ post.content }}</p>
+						<p>{{ post.text|linebreaksbr }}</p>
+						{% if request.user.is_authenticated %}
+						<form action="{% url 'upvote_post' %}" method="post">
+							{% csrf_token %}
+							{% if is_upvoted %}
+							<button type="submit" id="upvote" name="post_id" value="{{ post.id }}"
+								class="btn btn-primary btn-success mr-md-0">Upvoted!</button>
+							{% else %}
+							<!-- <button type="submit" id="upvote" name="post_id" value="{{ post.id }}"
+							class="btn btn-primary mr-md-0"><i class="fa fa-arrow-up">&nbsp;</i>Upvote</button> -->
+							{% endif %}
+						</form>
+						{% endif %}
+						<span style="float:left">{{post.total_upvotes}} Upvotes{{ total_upvotes|pluralize }}</span>
+
+						{% if request.user.is_authenticated %}
+						<form action="{% url 'downvote_post' %}" method="post" style="float: left;">
+							{% csrf_token %}
+							{% if is_downvoted %}
+							<button type="submit" id="downvote" name="post_id" value="{{ post.id }}"
+								class="btn btn-primary btn-success mr-md-0">Downvoted!</button>
+							{% else %}
+							<!-- <button type="submit" id="downvote" name="post_id" value="{{ post.id }}"
+							class="btn btn-primary mr-md-0">Downvote</button> -->
+							{% endif %}
+
+						</form>
+						{% endif %}
+						<span style="float:left;margin-left: 15px;">{{post.total_downvotes}}
+							Downvotes{{ total_downvotes|pluralize }}</span>
+
+
+
+						<a href="{% url 'post-detail' pk=post.pk %}">&nbsp;Comments: {{ post.comments.count }}</a>
+						<br><br>
+					</div>
+				</article>
+			</div>
+			{% endfor %}
+			{% endif %}
+			{% load crispy_forms_tags %}
+			<div class="container" style="padding:5em;margin:10em;background-color: white;">
+				<div class="content-section" style="margin-top:1em;">
+					<form method="POST" enctype="multipart/form-data" id="personForm"
+						data-cities-url="{% url 'ajax_load_cities' %}" novalidate>
+						{% csrf_token %}
+						<fieldset class="form-group">
+							<legend class="border-bottom mb-4"> Sort Posts </legend>
+							{{ form1 | crispy }}
+							{{ form2 | crispy }}
+						</fieldset>
+						<div class="form-group">
+							<button class="btn btn-outline-info" type="submit"> Search </button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+			<script>
+				$("#id_state").change(function () {
+					var url = $("#personForm").attr("data-cities-url");
+					var stateId = $(this).val();
+
+					$.ajax({
+						url: url,
+						data: {
+							'state': stateId
+						},
+						success: function (data) {
+							$("#id_city").html(data);
+						}
+					});
+
+				});
+			</script>
+			{% endblock content %}
+		</div>
+</body>
+
+</html>

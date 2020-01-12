@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Basic -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Mobile Metas -->
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<!-- Site Metas -->
+<title>S.H.A.D.O.W - Forum</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<!-- Site Icons -->
+<link rel="shortcut icon" href="{% static "images/favicon2.ico" %}" type="image/x-icon" />
+<link rel="apple-touch-icon" href="{% static "images/apple-touch-icon2.png" %}">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+<!-- Site CSS -->
+<link rel="stylesheet" href="{% static "style.css" %}">
+<!-- Responsive CSS -->
+<link rel="stylesheet" href="{% static "css/responsive.css" %}">
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{% static "css/custom.css" %}">
+<script src="{% static "js/modernizr.js" %}"></script> <!-- Modernizr -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400">
+<!-- https://getbootstrap.com/ -->
+<link rel="stylesheet" href="{% static "this/templatemo-style.css" %}">
+
+<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+<style>
+    #mainNav {
+        opacity: 70%;
+        transition: opacity 1s;
+    }
+
+    #mainNav:hover {
+        opacity: 100%;
+    }
+</style>
+</head>
+
+<body class="politics_version" onload="myFunction()">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background-color: #242222">
+        <div class="container">
+            <div id="page-top"></div>
+            <a class="navbar-brand js-scroll-trigger" href="#page-top">
+                <img class="img-fluid" src="{% static "images/test.png" %}" alt="" />
+            </a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                aria-label="Toggle navigation">
+                Menu
+                <i class="fa fa-bars"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav text-uppercase ml-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'blog-home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                            <a class="nav-link" href="{% url 'trend' %}">Trending</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'post-create' %}">Add Post</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register-camera' %}">Camera</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cameraslist' %}">Camera List</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container" style="font-size:25px;margin-top:5em;padding:2em;text-align:center;background-color: #404040;border-radius: 0.5em;">
+        You're not allowed to Access this Page
+    </div>

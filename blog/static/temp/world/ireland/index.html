@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style>
+    @import url(mapStyle.css);
+</style>
+
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+<body>
+   <!-- Table to hold the Divs -->
+   <table border="0" cellpadding="10" style="overflow-y: scroll;">
+        <tr>
+            <td><div id="table_container" class="csvTable"></div></td>
+            <td><div id="map_container"></div></td>
+        </tr>
+    </table>
+
+<script>
+
+// Based on http://public.johnnyotoole.fastmail.fm/county_map.html 
+
+// Based on http://bl.ocks.org/mbostock/4699541
+
+//Width and height
+var w = 600;
+var h = 600;
+var active;
+var jsonOutside;
+
+//Define map projection NB change to mercator and changed zoom etc
+var projection = d3.geo.mercator()
+    .center([0, 53.4])
+    .rotate([8.2, 0])
+    .scale(3500)
+    .translate([w / 2, h / 2]);
+
+//Define path generator
+var path = d3.geo.path()
+                 .projection(projection);
+
+//Create SVG element
+var svg = d3.select("#map_container")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h);
+
+// from colorbrewer (http://colorbrewer2.org/)
+var colours = ["#BAE4B3", "#74C476", "#31A354", "#006D2C"]; 
+
+// setup colours for choropleth
+var colScale = d3.scale.ordinal() 
+                  .range(colours);
+
+svg.append("rect")
+    .attr("width", w)
+    .attr("height", h)
+    .on("click", reset);
+
+var g = svg.append("g");
+
+//Load in CSV data
+d3.csv("referendum_results.csv", function (data) {
+
+    //Load in GeoJSON data
+    d3.json("ireland_counties.json", function (json) {
+
+      // join csv data with json data and create 
+      json.features.forEach(function (d,i) {
+        data.forEach(function (e,j) {
+          if (d.properties.name === e.County) {
+            d.properties.value = +e.Result;
+          };
+        })
+      })
+      
+      jsonOutside = json; // pass json to a global so tableRowClicked has access
+      console.log(path);
+      
+
+        //Bind data and create one path per GeoJSON feature
+        g.selectAll("path")
+           .data(json.features)
+           .enter()
+           .append("path")
+           .attr("d", path)
+           .attr("class", "feature")
+           .attr("id", function (d) { return d.properties.name; }) // added id so click could work on id which is common between the json and csv data
+           .on("click", function (d) { click(d); })
+           .style("stroke", "white")
+           .style("fill", function (d,i) { return colScale(d.properties.value); }); // fill based on colour scale
+        //console.log(path);
+        g.append("path")
+           .data(json.features)
+           .enter()
+           .append("path")
+           .attr("class", "mesh")
+           .attr("d", path);
+    });
+
+});
+
+function click(d) {
+
+    if (active === d) return reset();
+   g.selectAll(".active").classed("active", false);
+   d3.select("#"+d.properties.name).classed("active", active = d); // changed selection to id
+   
+   var b = path.bounds(d);
+
+   g.transition().duration(750).attr("transform",
+       "translate(" + projection.translate() + ")"
+       + "scale(" + .95 / Math.max((b[1][0] - b[0][0]) / w, (b[1][1] - b[0][1]) / h) + ")"
+       + "translate(" + -(b[1][0] + b[0][0]) / 2 + "," + -(b[1][1] + b[0][1]) / 2 + ")");
+}
+
+function reset() {
+    g.selectAll(".active").classed("active", active = false);
+    g.transition().duration(750).attr("transform", "");
+}
+
+function tableRowClicked(x) {
+
+    jsonOutside.features.forEach(function (d) { // loop through json data to match td entry
+        if (x.value === d.properties.name) {
+            var county = d;
+            click(d); // pass json element that matches td data to click 
+        };
+    })
+}
+
+</script>
+</body>
+</html>

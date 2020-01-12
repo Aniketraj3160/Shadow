@@ -1,0 +1,11 @@
+{% autoescape off %}
+
+
+    Hi {{ user.username }},
+    WELCOME TO S.H.A.D.O.W
+Please click on the link to confirm your registration,
+http://{{ domain }}{% url 'users:activate' uidb64=uid token=token %}
+{% endautoescape %}
+
+Regards
+Team S.H.A.D.O.W

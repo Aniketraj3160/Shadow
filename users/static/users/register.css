@@ -1,0 +1,88 @@
+.body{
+
+  margin-top: 0px;
+  background-color: #f4f4f4;
+  margin-bottom: 100px;
+   background-image: url("crime-scene-wallpaper_4920841.jpg") ;
+   background-repeat:no-repeat;
+  background-size: cover;
+  object-fit: contain;
+}
+
+.profile-main{
+  width: 47%;
+  height: 642px;
+  color: white;
+  border-radius: 10px;
+  font-size: 30px
+  margin: 0 auto;
+  border: 1.4px solid #caa060;
+  padding-bottom: 10px;
+  padding-left: 20px;
+   box-shadow: 10px 10px 5px rgba(0,0,0,0.4);
+   -webkit-transition : border 1s;
+  transition: border 0.3s;
+  font-family: Open Sans;
+  padding-left: 7%;
+  padding-top:2%; 
+  background-color: rgba(0,0,0, 0.4);
+ }
+
+.profile-main:hover{
+  border: 1.9px solid #e19536;
+  background-color: rgba(0,0,0, 0.9);
+}
+/*.profile-main:active{
+  border: 2px solid #f4c613;
+  background-color: rgba(0,0,0, 0.4);
+
+}*/
+
+.form-control {
+    display: block;
+    width: 80%;
+    height: 36px;
+    padding: .375rem .75rem;
+    font-size: 14px;
+}
+
+
+.button {
+border-radius: 28px;
+border :1px solid rgba(255,255,255,0.9);
+font-size: 13px;
+text-transform: uppercase;
+margin:0 3px;
+padding: 8px 46px 8px 46px;
+-webkit-trasition: all .5s;
+transition: all .5s;
+}
+
+.button-q {
+background-color: rgba(0,0,0,0.4);
+  color: #e19536;
+  
+}
+
+.button:hover,
+.button:focus {
+background-color:rgba(0,0,0,0.1) ;
+color: #ffffff;
+border :1px solid #e19536;
+}
+
+.select1{
+      width: 80%;
+    border-radius: 5px;
+    height: 36px;
+    padding: 5px;
+    background: transparent;
+    color: whitesmoke;
+}
+
+.navbar-inverse {
+    background-color: #222;
+    border-color: #4b4a49;
+    border-bottom-width: 37px;
+    border-left-width: 0px;
+}

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style type="text/css">
+    #chart text {
+        fill: black;
+        font: 10px sans-serif;
+        text-anchor: end;
+    }
+    .axis text {
+        font: 10px sans-serif;
+    }
+    .axis path, .axis line {
+        fill: none;
+        /*stroke: #fff;*/
+        shape-rendering: crispEdges;
+    }
+    body {
+        /*background: #1a1a1a;*/
+        color: #eaeaea;
+        padding: 10px;
+    }
+    path {
+        stroke: steelblue;
+        stroke-width: 2;
+        fill: none;
+    }
+</style>
+
+<div id="chart" style="height:100%;width:100%">
+    <div class="innerCont" style="overflow: auto; top:100px; left: 400px; height:100% ; width:100% ;position: relative;overflow: hidden;">
+</div>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js" charset="utf-8"></script>
+<script src="https://d3js.org/d3.v3.min.js" ></script>
+<script src="https://unpkg.com/d3@5.6.0/dist/d3.min.js"></script>
+<script type="text/javascript">
+    var salesData;
+    var runningData=[];
+    var runningColors=[];
+    var truncLengh = 30;
+    chartOptions = [{
+        "captions": [{"Department of Consumer Affairs": "Department of Consumer Affairs", "Department of Food and Public Distribution": "Department of Food and Public Distribution", "Serious Fraud Investigation Office": "Serious Fraud Investigation Office", "Forest Reserve Conservation Authority": "Forest Reserve Conservation Authority", "Criminal Investigation Department": "Criminal Investigation Department", "Labour Bureau": "Labour Bureau", "National Commission for Minorities": "National Commission for Minorities", "National Commission for Women": "National Commission for Women"}],
+        "color": [{ "Department of Consumer Affairs": "#0070C0", "Department of Food and Public Distribution": "#ff0000", "Serious Fraud Investigation Office": "#3B5841", "Forest Reserve Conservation Authority": "#BAF554", "Criminal Investigation Department": "#538300", "Labour Bureau": "#DBD03A", "National Commission for Minorities": "#807676", "National Commission for Women": "#AF00AF" }],
+        "xaxis": "authority",
+        "yaxis": "case_total"
+    }]
+    
+    d3.csv('dataa.csv')
+        .then(data => {
+            data.forEach(d => {
+                d.case_total=+d.case_total;
+            });
+        console.log(data)
+        Plot(data);
+    });
+    function Plot(csvData) {
+        TransformChartData(csvData, chartOptions);
+        BuildPie("chart", csvData, chartOptions);
+    }
+
+    function BuildPie(id, csvData, options) {
+        var xVarName;
+        var divisionRatio = 2.5;
+        var legendoffset = 0;
+        chart = d3.select("#" + id + " .innerCont");
+        console.log(chart)
+        var yVarName = options[0].yaxis;
+        width = 600,
+        height = 546;
+        radius = Math.min(width, height) / divisionRatio;   
+        console.log(width, height)
+        xVarName = options[0].xaxis;
+        var rcolor = d3.scale.ordinal().range(runningColors);
+        console.log(runningColors)
+        console.log(runningData)
+        arc = d3.arc()
+                .outerRadius(radius)
+                .innerRadius(radius - 200);
+
+        var arcOver = d3.arc().outerRadius(radius + 20).innerRadius(radius - 195);
+
+
+
+        chart = chart
+                .append("svg")  //append svg element inside #chart
+                .attr("width", width*10)    //set width
+                .attr("height", height*10)  //set height
+                .append("g")
+                .attr("transform", "translate(" + ((width / divisionRatio)) + "," + ((height / divisionRatio) + 30) + ")");
+        console.log(chart)
+        var pie = d3.layout.pie()
+                    .sort(null)
+                    .value(function (d) {
+                        return d.case_total;
+                    });
+        console.log(pie);
+        var g = chart.selectAll(".arc")
+                    .data(pie(runningData))
+                    .enter().append("g")
+                    .attr("class", "arc");
+        var count = 0;
+        var path = g.append("path")
+                    .attr("d", arc)
+                    .attr("id", function (d) { return "arc-" + (count++); })
+                    .style("opacity", 0.9);
+
+        path.on("mouseenter", function (d) {
+            d3.select(this)
+                .attr('stroke', 'white')
+                .transition()
+                .duration(200)
+                .attr("d", arcOver)
+                .attr('stroke-width', 1);
+            })
+            .on("mouseleave", function (d) {
+                d3.select(this).transition()
+                    .duration(200)
+                    .attr("d", arc)
+                    .attr("stroke", "none");
+            }) 
+
+        
+        console.log(path)
+        path.append("svg:title")
+        .text(function (d) {
+            console.log(d.data[yVarName]);
+            return d.data["title"] + " (" + d.data[yVarName] + ")";
+        });
+        path.style("fill", function (d) {
+            return rcolor(d.data[xVarName]);
+        })
+        g.append("text")
+         .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+         .attr("dy", ".35em")
+         .style("text-anchor", "middle")
+         .style("opacity", 1)
+         .text(function (d) {
+             return d.data[yVarName];
+         });
+        count = 0;
+        var legend = chart.selectAll(".legend")
+            .data(runningData).enter()
+            .append("g").attr("class", "legend")
+            .attr("legend-id", function (d) {
+                return count++;
+            })
+            .attr("transform", function (d, i) {
+                return "translate(165," + (parseInt("-" + (runningData.length * 10)) + i * 28 + legendoffset) + ")";
+            })
+            .style("cursor", "pointer")
+            .on("click", function(){
+                var oarc = d3.select("arc-" + $(this).attr("legend-id"));
+                console.log("arc-" + $(this).attr("legend-id"))
+                oarc.style("opacity", 0.3)
+                .attr("stroke", "white")
+                .transition()
+                .duration(200)
+                .attr("d", arcOver)
+                .attr("stroke-width", 1);
+
+                //console.log("sex")
+                setTimeout(function() {
+                    oarc.style("opacity", 0.9)
+                    .attr("d", arc)
+                    .transition()
+                    .duration(200)
+                    .attr("stroke", "none");
+                }, 1000);
+            })
+
+            
+        
+        var leg = legend.append("rect");
+        leg.attr("x", width / 2)
+            .attr("width", 18).attr("height", 18)
+            .style("fill", function (d) {
+                return rcolor(d[yVarName]);
+            })
+        legend.append("text").attr("x", (width / 2) - 5)
+            .attr("y", 9).attr("dy", ".35em")
+            .style("text-anchor", "end").text(function (d) {
+                return d.caption;
+            });
+        leg.append("svg:title")
+        .text(function (d) {
+            return d["title"] + " (" + d[yVarName] + ")";
+        });
+    }
+
+    function TransformChartData(csvData, opts) {
+        var result = [];
+        var resultColors = [];
+        var counter = 0;
+        var hasMatch;
+        var xVarName;
+        var yVarName = opts[0].yaxis;
+        xVarName = opts[0].xaxis;
+        for (var i in csvData) {
+            hasMatch = false;
+            for (var index = 0; index < result.length; ++index) {
+                var data = result[index];
+                if (data[xVarName] == csvData[i][xVarName]) {
+                    result[index][yVarName] = result[index][yVarName] + csvData[i][yVarName];
+                    hasMatch = true;
+                    break;
+                }
+            }
+            if (hasMatch == false) {
+                ditem = {};
+                ditem[xVarName] = csvData[i][xVarName];
+                ditem[yVarName] = csvData[i][yVarName];
+                ditem["caption"] = opts[0].captions != undefined ? opts[0].captions[0][csvData[i][xVarName]] : "";
+                ditem["title"] = opts[0].captions != undefined ? opts[0].captions[0][csvData[i][xVarName]] : "";
+                result.push(ditem);
+                resultColors[counter] = opts[0].color != undefined ? opts[0].color[0][csvData[i][xVarName]] : "";
+                counter += 1;
+            }
+        }
+        for (var x=0;x<result.length-1;x++)
+            runningData[x]=result[x];
+        // runningData = result;
+        for (var x=0;x<resultColors.length-1;x++)
+            runningColors[x]=resultColors[x];
+        // runningColors = resultColors;
+        return;
+    }
+</script>

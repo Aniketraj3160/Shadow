@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Basic -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!-- Mobile Metas -->
+<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<!-- Site Metas -->
+<title>S.H.A.D.O.W - Forum</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<!-- Site Icons -->
+<link rel="shortcut icon" href="{% static "images/favicon2.ico" %}" type="image/x-icon" />
+<link rel="apple-touch-icon" href="{% static "images/apple-touch-icon2.png" %}">
+
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+<!-- Site CSS -->
+<link rel="stylesheet" href="{% static "style.css" %}">
+<!-- Responsive CSS -->
+<link rel="stylesheet" href="{% static "css/responsive.css" %}">
+<!-- Custom CSS -->
+<link rel="stylesheet" href="{% static "css/custom.css" %}">
+<script src="{% static "js/modernizr.js" %}"></script> <!-- Modernizr -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+<!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+<script>
+   $(document).ready(function () {
+
+      $("input[name='profile']").change(function () {
+         if ($(this).val() === 'journalist') {
+            journ();
+         }
+         else if ($(this).val() === 'anonymus') {
+            anymus();
+         }
+         else if ($(this).val() === 'authority') {
+            autho();
+         }
+      });
+      function journ() {
+         l1 = document.getElementById('email');
+         l2 = document.getElementById('cid');
+         l3 = document.getElementById('cname');
+         li1 = document.getElementById('emaili');
+         li2 = document.getElementById('cidi');
+         li3 = document.getElementById('cnamei');
+         l1.style.display = 'block';
+         l2.style.display = 'block';
+         l3.style.display = 'block';
+         li1.style.display = 'block';
+         li2.style.display = 'block';
+         li3.style.display = 'block';
+         l1 = document.getElementById('did');
+         l2 = document.getElementById('dname');
+         li2 = document.getElementById('didi');
+         li3 = document.getElementById('dnamei');
+         l1.style.display = 'none';
+         l2.style.display = 'none';
+         li2.value = "";
+         li2.style.display = 'none';
+         li3.value = "";
+         li3.style.display = 'none';
+      };
+
+      function anymus() {
+         l1 = document.getElementById('email');
+         l2 = document.getElementById('cid');
+         l3 = document.getElementById('cname');
+         l4 = document.getElementById('did');
+         l5 = document.getElementById('dname');
+         li1 = document.getElementById('emaili');
+         li2 = document.getElementById('cidi');
+         li3 = document.getElementById('cnamei');
+         li4 = document.getElementById('didi');
+         li5 = document.getElementById('dnamei');
+         l1.style.display = 'none';
+         l2.style.display = 'none';
+         l3.style.display = 'none';
+         l4.style.display = 'none';
+         l5.style.display = 'none';
+         li1.value = "";
+         li1.style.display = 'none';
+         li2.value = '';
+         li2.style.display = 'none';
+         li3.value = '';
+         li3.style.display = 'none';
+         li4.value = '';
+         li4.style.display = 'none';
+         li5.value = '';
+         li5.style.display = 'none';
+      }
+
+      function autho() {
+         l1 = document.getElementById('email');
+         l2 = document.getElementById('did');
+         l3 = document.getElementById('dname');
+         li1 = document.getElementById('emaili');
+         li2 = document.getElementById('didi');
+         li3 = document.getElementById('dnamei');
+         l1.style.display = 'block';
+         l2.style.display = 'block';
+         l3.style.display = 'block';
+         li1.style.display = 'block';
+         li2.style.display = 'block';
+         li3.style.display = 'block';
+         l1 = document.getElementById('cid');
+         l2 = document.getElementById('cname');
+         li2 = document.getElementById('cidi');
+         li3 = document.getElementById('cnamei');
+         l1.style.display = 'none';
+         l2.style.display = 'none';
+         li2.value = '';
+         li2.style.display = 'none';
+         li3.value = '';
+         li3.style.display = 'none';
+      };
+   });
+</script>
+<style>
+   #mainNav {
+      opacity: 70%;
+      transition: opacity 1s;
+   }
+
+   #mainNav:hover {
+      opacity: 100%;
+   }
+
+   .bg {
+      position: absolute;
+      width: 100%;
+      background-position: center;
+      background-repeat: repeat-y;
+      z-index: -100;
+   }
+
+   body {
+      background-image: url({% static "uploads/BG.jpg" %});
+      background-repeat: repeat-y;
+   }
+</style>
+</head>
+
+<body id="page-top" class="politics_version">
+   <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav" style="background-color: #242222">
+      <div class="container">
+         <a class="navbar-brand js-scroll-trigger" href="#page-top">
+            <img class="img-fluid" src="{% static "images/test.png" %}" alt="" />
+         </a>
+         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+            data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+            aria-label="Toggle navigation">
+            Menu
+            <i class="fa fa-bars"></i>
+         </button>
+         <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav text-uppercase ml-auto">
+
+            </ul>
+         </div>
+      </div>
+   </nav>
+   <div class="container col-lg-6" style="margin-top:10em;padding:2%;background-color:white;">
+      <form method="POST" action="{% url 'profile_page' %}">
+         {% csrf_token %}
+         <div class="row-md-6" style="text-align: center;">
+            <label class="radio-inline col-lg-2"><input type="radio" name="profile" value="journalist">
+               Journalist</label>&nbsp;
+            <label class="radio-inline col-lg-2"><input type="radio" name="profile" value="anonymus" checked>
+               Anonymous</label>&nbsp;
+            <label class="radio-inline col-lg-2"><input type="radio" name="profile" value="authority"> Authority</label>
+            <div class="row" style="margin-top:25px;">
+               <div class="col">
+                  <div class="row" style="padding: 4px;display:none;" id="email">Enter your Email</div>
+                  <div class="row" style="padding: 4px;display:none;" id="did">Enter your Dept_id</div>
+                  <div class="row" style="padding: 4px;display:none;" id="dname">Enter your Dept_name</div>
+                  <div class="row" style="padding: 4px;display:none;" id="cname">Enter your Company Name</div>
+                  <div class="row" style="padding: 4px;display:none;" id="cid">Enter your Company ID</div>
+               </div>
+               <div class="col">
+                  <input placeholder="Email" type="email" name="email" style="margin: 1px;display:none;" id="emaili">
+                  <input placeholder="Department ID" type="text" name="dept_id" style="margin: 1px;display:none;"
+                     id="didi">
+                  <input placeholder="Department Name" type="text" name="dept_name" style="margin: 1px;display:none;"
+                     id="dnamei">
+                  <input placeholder="Company Name" type="text" name="company_name" style="margin: 1px;display:none;"
+                     id="cnamei">
+                  <input placeholder="Company ID" type="text" name="company_id" style="margin: 1px;display:none;"
+                     id="cidi"></div>
+            </div>
+            <button style="margin-top: 2em;" class="btn btn-default" type="submit" name="submit" value="submit"
+               id="submit"> Submit </button>
+         </div>
+      </form>
+   </div>
+   <!-- <form >
+         dept name: <input type = "text" name = "first_name" />
+         <br>
+         email: <input type = "text" name = "last_name" />
+      </form>
+
+      <form >
+         dept name: <input type = "text" name = "first_name" />
+         <br>
+         email: <input type = "text" name = "last_name" />
+      </form> -->
+   </div>
+</body>
+
+</html>
